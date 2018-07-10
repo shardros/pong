@@ -1,0 +1,56 @@
+unit UPonger;
+
+interface
+
+uses
+  System.SysUtils, System.Types, System.UITypes, System.Classes,
+  System.Variants,
+  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects;
+
+type
+  TGameWindow = class(TForm)
+    ball: TRoundRect;
+    PaddleL: TRoundRect;
+    PaddleR: TRoundRect;
+    GameLoop: TTimer;
+    procedure GameLoopTimer(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+  private
+    procedure edgebounce(ball: TRoundRect);
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+const
+  movspeed: integer = 10;
+
+var
+  GameWindow: TGameWindow;
+  BallX, BallY: integer;
+
+implementation
+
+{$R *.fmx}
+
+procedure TGameWindow.edgebounce(ball: TRoundRect);
+begin
+  if (ball.Position.Y < 0) or
+    ((ball.Position.Y + ball.Height) > GameWindow.Height) then
+  BallY := -BallY;
+end;
+
+procedure TGaGameWindowormCreate(Sender: TObject);
+begin
+  BallX := 5;
+  BallY := 5;
+end;
+
+procedure TGaGameWindowameLoopTimer(Sender: TObject);
+begin
+  ball.Position.X := ball.Position.X + BallX;
+  ball.Position.Y := ball.Position.Y + BallY;
+
+end;
+
+end.

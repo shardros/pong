@@ -1,0 +1,119 @@
+unit UPonger;
+
+interface
+
+uses
+  System.SysUtils, System.Types, System.UITypes, System.Classes,
+  System.Variants,
+  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
+  FMX.Controls.Presentation, FMX.StdCtrls, math;
+
+type
+  TGameWindow = class(TForm)
+    ball: TRoundRect;
+    PaddleL: TRoundRect;
+    PaddleR: TRoundRect;
+    clock: TTimer;
+    scoreLabel: TLabel;
+
+    procedure clockTimer(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+  private
+    BallX, BallY: integer;
+    procedure bounce(ball: TRoundRect);
+    procedure paddleTrackBall(ball, paddle: TRoundRect);
+    procedure gameover;
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+const
+  movspeed: integer = 5;
+
+var
+  GameWindow: TGameWindow;
+
+implementation
+
+{$R *.fmx}
+
+procedure TGameWindow.clockTimer(Sender: TObject);
+begin
+  ball.Position.X := ball.Position.X + BallX;
+  ball.Position.Y := ball.Position.Y + BallY;
+
+  bounce(ball);
+
+  paddleTrackBall(ball, PaddleL);
+  paddleTrackBall(ball, PaddleR);
+
+end;
+
+procedure TGameWindow.bounce(ball: TRoundRect);
+var
+  paddleLMid, paddleRMid, X, Y: real;
+  ballYCord: single;
+begin
+  { Bounce on horizontal bars }
+  if (ball.Position.Y < 0) or
+    ((ball.Position.Y + ball.Height) > GameWindow.Height) then
+    BallY := -BallY;
+
+  { Bounce on the paddles }
+
+  paddleLMid := PaddleL.Position.Y + (PaddleL.Height / 2);
+  paddleRMid := PaddleR.Position.Y + (PaddleR.Height / 2);
+
+  if ball.Position.X < PaddleL.Width then
+  begin
+    if (ball.Position.Y > PaddleL.Position.Y) and
+      (ball.Position.Y < (PaddleL.Position.Y + PaddleL.Height)) then
+      BallX := (round(-BallX * abs(paddleLMid - ball.Position.Y)) div 20) + 100;
+    // Makes the ball go faster if hit near edges
+    BallX := min(abs(BallX), movspeed) * sign(BallX);
+    // Stops the ball going off into hyper space
+    ball.Position.X := ball.Position.X + sign(BallX) * movspeed * 2;
+  end;
+
+  if ball.Position.X > (GameWindow.Width - (PaddleR.Width + ball.Width)) then
+  begin
+    if (ball.Position.Y > PaddleR.Position.Y) and
+      (ball.Position.Y < (PaddleR.Position.Y + PaddleR.Height)) then
+      X := ball.Position.Y - PaddleR.Position.Y;
+    BallX := (round(-BallX * (math.Power(X, 2) + (4 * X))));
+    // Makes the ball go faster if hit near the center following a -1.5x^2 + 2
+    BallX := min(abs(BallX), movspeed) * sign(BallX);
+    // Stops the ball going of into hyperspace
+    ball.Position.X := ball.Position.X + sign(BallX) * movspeed * 2;
+  end;
+
+  if (ball.Position.X > GameWindow.Width) or (ball.Position.X < 0) then
+    gameover;
+end;
+
+procedure TGameWindow.FormCreate(Sender: TObject);
+begin
+  BallX := -10;
+  BallY := -10;
+
+  scoreLabel.Visible := False;
+end;
+
+procedure TGameWindow.gameover;
+begin
+  scoreLabel.Visible := True;
+end;
+
+procedure TGameWindow.paddleTrackBall(ball, paddle: TRoundRect);
+var
+  paddleMid: real;
+
+begin
+  paddleMid := paddle.Position.Y + (paddle.Height / 2);
+
+  paddle.Position.Y := paddle.Position.Y +
+    (movspeed * math.sign(ball.Position.Y - paddleMid));
+end;
+
+end.
