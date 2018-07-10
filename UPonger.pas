@@ -29,7 +29,8 @@ type
   end;
 
 const
-  movspeed: integer = 5;
+  movspeed: integer = 10;
+  ballNum: integer = 2;
 
 var
   GameWindow: TGameWindow;
@@ -95,9 +96,16 @@ begin
 end;
 
 procedure TGameWindow.FormCreate(Sender: TObject);
+var
+  i: integer;
 begin
   BallX := -10;
   BallY := -10;
+
+  for i := 0 to ballNum do
+  begin
+
+  end;
 
   scoreLabel.Visible := False;
 end;

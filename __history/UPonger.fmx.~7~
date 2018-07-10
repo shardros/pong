@@ -1,0 +1,45 @@
+object GameWindow: TGameWindow
+  Left = 0
+  Top = 39
+  Caption = 'Form1'
+  ClientHeight = 480
+  ClientWidth = 640
+  Position = Designed
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
+  Top = 39
+  DesignerMasterStyle = 0
+  object ball: TRoundRect
+    Position.X = 24.000000000000000000
+    Position.Y = 8.000000000000000000
+    Size.Width = 20.000000000000000000
+    Size.Height = 20.000000000000000000
+    Size.PlatformDefault = False
+  end
+  object PaddleL: TRoundRect
+    Size.Width = 25.000000000000000000
+    Size.Height = 137.000000000000000000
+    Size.PlatformDefault = False
+  end
+  object PaddleR: TRoundRect
+    Position.X = 616.000000000000000000
+    Position.Y = 344.000000000000000000
+    Size.Width = 25.000000000000000000
+    Size.Height = 137.000000000000000000
+    Size.PlatformDefault = False
+  end
+  object clock: TTimer
+    Interval = 1
+    OnTimer = clockTimer
+    Left = 248
+    Top = 168
+  end
+  object scoreLabel: TLabel
+    Position.X = 248.000000000000000000
+    Position.Y = 368.000000000000000000
+    Text = 'Wasted'
+    TabOrder = 1
+  end
+end
